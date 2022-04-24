@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>发布 - 淘宝社区</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/css/community.css"/>
+    <link rel="stylesheet" href="/css/bootstrap-theme.css.map"/>
+    <link rel="stylesheet" href="/css/bootstrap-theme.css.map"/>
+    <script src="/js/jquery-3.6.0.min.js"></script>
+    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+</head>
+
+<body>
+<div th:insert="navigation :: nav"></div>
+<div class="container-fluid main">
+    <div class="row">
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+            <h2><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>发起</h2>
+            <hr>
+            <form action="/publish" method="post">
+                <input class="hidden" name="id" th:value="${id}">
+                <div class="form-group">
+                    <label for="title">问题标题 (简单扼要) :</label>
+                    <input type="text" class="form-control" name="title"
+                           id="title" placeholder="问题标题..."
+                           autocomplete="off" th:value="${title}">
+                </div>
+                <div class="form-group" id="question-editor">
+                    <label for="description">问题补充 (必填, 请参考右侧提示) :</label>
+                    <textarea class="form-control" name="description"
+                              id="description"
+                              rows="10"
+                              cols="30"
+                              th:text="${description}"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="title">添加标签:</label>
+                    <input type="text" class="form-control" id="tag" name="tag"
+                           placeholder="输入标签,以, 号分割" th:value="${tag}">
+                </div>
+                <div class="container-fluid main">
+                    <div class="row">
+                        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                            <div class="alert alert-danger col-lg-12 col-md-12 col-sm-12 col-xs-12"
+                                 th:if="${error!=null}" th:text="${error}"></div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                            <button class="btn btn-success btn-publish" type="submit">
+                                发布
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+            <h3>
+                商品发布指南
+            </h3>
+            商品名称: 请用精简的语言描述您发布的问题,不超过25字
+            商品补充: 详细补充您的商品描述,确保信息全面
+            选择标签: 选择一个或者多个合适的标签,用逗号分隔开,不超过10个字
+
+        </div>
+    </div>
+</div>
+</body>
+</html>
