@@ -33,6 +33,7 @@ public class RegisterController {
         }
         user.setGmtCreate(System.currentTimeMillis());
         user.setGmtModified(System.currentTimeMillis());
+        user.setAvatarUrl("/images/user-36.png");
         userMapper.insert(user);
         return "redirect:/";
     }

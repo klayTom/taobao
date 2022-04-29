@@ -30,7 +30,7 @@ body {
 .community-menu {
     font-size: 13px;
     color: #999;
-    margin-bottom: 15px;
+    margin: 0 15px 15px;
 }
 
 .question-title {

@@ -36,6 +36,7 @@ public class LoginController {
         User dbUser = users.get(0);
         if (dbUser.getPassword().equals(user.getPassword())) {
             user.setId(dbUser.getId());
+            user.setAvatarUrl(dbUser.getAvatarUrl());
             httpServletRequest.getSession().setAttribute("user",user);
             return "redirect:/";
         }

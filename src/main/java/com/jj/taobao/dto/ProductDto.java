@@ -19,5 +19,6 @@ public class ProductDto {
     private Integer likeCount;
     private String tag;
     private String description;
+    private String filePath;
     private User user;
 }

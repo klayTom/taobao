@@ -25,7 +25,7 @@
                         <a th:if="${session.user.getUsername()=='admin'}" href="/publish">发布商品</a>
                     </li>
                     <li th:if="${session.user}!=null">
-                        <a href="/profile/replies">通知</a>
+                        <a href="/profile/replies">通知 <span class="badge" th:text="${session.unreadCount}"></span></a>
                     </li>
                     <li th:if="!${session.user}">
                         <a href="/toLogin">登录</a>

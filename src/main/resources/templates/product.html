@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${product.title}"></title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/css/community.css"/>
+    <link rel="stylesheet" href="/css/bootstrap-theme.css.map"/>
+    <script src="/js/jquery-3.6.0.min.js" type="application/javascript"></script>
+    <script src="/js/community.js" type="application/javascript"></script>
+    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+    <script src="/js/moment.js" type="application/javascript"></script>
+</head>
+<body>
+<div th:insert="navigation :: nav"></div>
+<div class="container-fluid main">
+    <div class="row">
+        <!-- 左边主要内容 -->
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+            <!-- 正文 -->
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
+                <h4 class="question-title" th:text="${product.title}"></h4>
+                <span class="text-desc">
+                        店家: <span th:text="${product.user.username}"></span> |
+                        浏览量: <span th:text="${product.viewCount}"></span> |
+                        发布时间: <span th:text="${#dates.format(product.gmtCreate,'yyyy-MM-dd HH:mm')}"></span>
+                </span>
+                <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
+                    <textarea style="display:none;" th:text="${product.description}"></textarea>
+                </div>
+
+                <!--标签-->
+                <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                   <span class="label label-info question-tag" th:each="tag : ${product.tag.split(',')}">
+                       <span class="glyphicon glyphicon-tag"></span>
+                       <span class="label label-info" th:text="${tag}"></span>
+                   </span>
+                </div>
+
+                <!--编辑-->
+                <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <a th:href="@{'/publish/'+${product.id}}" class="community-menu" th:if="${session.user!=null && session.user.id==product.creator}">
+                        <span class="glyphicon glyphicon-pencil" aria-hidden="true">编辑</span>
+                    </a>
+                    <a th:href="@{'/delete/'+${product.id}}" class="community-menu" th:if="${session.user!=null && session.user.id==product.creator}">
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true">下架该商品</span>
+                    </a>
+                </div>
+                <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            </div>
+
+            <!-- 回复-->
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <h4>
+                    <span th:text="${product.commentCount}"></span> 个回复
+                </h4>
+                <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 comment-sp">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 comments" th:each="comment : ${comments}">
+                    <div class="media">
+                        <div class="media-left">
+                            <a href="#">
+                                <img class="media-object img-rounded"  th:src="${session.user != null ? session.user.avatarUrl : '/images/default-avatar.png'}">
+                            </a>
+                        </div>
+                        <div class="media-body" th:id="${'community-body-'+comment.id}">
+                            <h5 class="media-heading">
+                                <span th:text="${comment.user.username}"></span>
+                            </h5>
+                            <div th:text="${comment.content}"></div>
+                            <div class="menu">
+
+                                <span th:data-id="${comment.id}" onclick="collapseComments(this)" class="comment-icon">
+                                    <span class="glyphicon glyphicon-comment"></span>
+                                    <span th:text="${comment.commentCount}"></span>
+                                </span>
+                                <span class="pull-right"
+                                      th:text="${#dates.format(comment.gmtCreate,'yyyy-MM-dd')}"></span>
+                            </div>
+                            <!-- 二级评论 -->
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 collapse sub-comments"
+                                 th:id="${'community-'+comment.id}">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <input type="text" class="form-control" placeholder="评论一下..." th:id="${'input-'+comment.id}">
+                                    <button type="button" class="btn btn-success pull-right" th:data-id="${comment.id}" onclick="community(this)">提交</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--回复输入框-->
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <h4>
+                    提交回复
+                </h4>
+                <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 comment-sp"/>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="comment_section">
+                    <div class="media">
+                        <div class="media-left">
+                            <a href="#">
+                                <img class="media-object img-rounded" th:src="${session.user.avatarUrl}">
+                            </a>
+                        </div>
+                        <div class="media-body">
+                            <h5 class="media-heading">
+                                <span th:text="${session.user != null ? session.user.username : '默认用户'}"></span>
+                            </h5>
+                        </div>
+                    </div>
+                    <input type="hidden" id="product_id" th:value="${product.id}">
+                    <textarea class="form-control comment" rows="6" id="comment_content"></textarea>
+                    <button type="button" class="btn btn-success btn-comment" onclick="post()">回复</button>
+                </div>
+            </div>
+            <!-- 右边信息模块 -->
+        </div>
+        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <h4>店家</h4>
+                <div class="media">
+                    <div class="media-left">
+                        <a href="#">
+                            <img class="media-object img-rounded" src="/images/web.png">
+                        </a>
+                    </div>
+                    <div class="media-body">
+                        <h5 class="media-heading">
+                            <span th:text="${product.user.username}"></span>
+                        </h5>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <h4>相关问题</h4>
+                <ul class="question-related">
+                    <li th:each="related : ${relatedProducts}">
+                        <a th:href="@{'/product/'+${related.id}}" th:text="${related.title}"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:insert="footer :: foot"></div>
+</body>
+</html>

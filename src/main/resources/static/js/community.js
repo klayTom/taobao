@@ -2,15 +2,16 @@
 * 提交回复
 * */
 function post() {
-    var questionId = $("#question_id").val()
-    var context = $("#comment_content").val();
+    var productId = $("#product_id").val();
+    var content = $("#comment_content").val();
 
-    comment2target(questionId, 1, context);
+    comment2target(productId, 1, content);
 }
 
-function comment2target(targetId, type, context) {
-    if (!context) {
+function comment2target(targetId, type, content) {
+    if (!content) {
         alert("不能回复空内容~~~");
+        return;
     }
     $.ajax({
         type: 'POST',
@@ -18,7 +19,7 @@ function comment2target(targetId, type, context) {
         contentType: 'application/json',
         data: JSON.stringify({
             "parentId": targetId,
-            "context": context,
+            "content": content,
             "type": type
         }),
         success: function (data) {
@@ -27,7 +28,7 @@ function comment2target(targetId, type, context) {
             } else if (data.code == 2003) {
                 var isAccepted = confirm(data.message);
                 if (isAccepted) {
-                    window.open("https://github.com/login/oauth/authorize?client_id=f88ba218935aa8831b3f&redirect_uri=http://localhost:8080/callback&scope=user&state=1")
+                    window.open("http://localhost:8080/toLogin")
                     window.localStorage.setItem("closable", true);
                 } else {
                     alert(data.message);
@@ -40,13 +41,10 @@ function comment2target(targetId, type, context) {
 
 function community(e) {
     var commentId = e.getAttribute("data-id");
-    var context = $("#input-" + commentId).val();
-    comment2target(commentId, 2, context);
+    var content = $("#input-" + commentId).val();
+    comment2target(commentId, 2, content);
 }
 
-/*
-* 展开二级评论
-* */
 function collapseComments(e) {
     var id = e.getAttribute("data-id");
     var comments = $("#community-" + id);
@@ -73,9 +71,9 @@ function collapseComments(e) {
                         "class": "media-body",
                     }).append($("<h5/>", {
                         "class": "media-heading",
-                        "html": comment.user.name
+                        "html": comment.user.username
                     })).append($("<div/>", {
-                        "html": comment.context
+                        "html": comment.content
                     })).append($("<div/>", {
                         "class": "menu"
                     }).append($("<span/>", {
@@ -87,11 +85,11 @@ function collapseComments(e) {
                         "class": "media-left",
                     }).append($("<img/>", {
                         "class": "media-object img-rounded",
-                        "src": comment.user.avatarUrl
+                        "src": "/images/web.png"
                     }));
 
                     var mediaElement = $("<div/>",{
-                       "class": "media",
+                        "class": "media",
                     }).append(mediaLeftElement).append(mediaBodyElement);
 
                     var commentElement = $("<div/>",{
@@ -115,7 +113,7 @@ function showSelectTag() {
 }
 
 function selectTag(e){
-    var value= e.getAttribute("data-tag");
+    var value = e.getAttribute("data-tag")
     var previous = $("#tag").val();
     if (previous.indexOf(value) == -1) {
         if (previous) {
@@ -125,4 +123,22 @@ function selectTag(e){
         }
     }
 
+}
+
+
+
+function postData() {
+    var formData = new FormData();
+    formData.append("file", $("#file")[0].files[0]);
+    $.ajax({
+        url: "/file/upload",
+        type: "post",
+        data: formData,
+        processData: false, // 告诉jQuery不要去处理发送的数据
+        contentType: false, // 告诉jQuery不要去设置Content-Type请求头
+        dataType: 'text',
+        success: function(data) {
+            $("#filePath").attr("value",data.message);
+        },
+    });
 }
