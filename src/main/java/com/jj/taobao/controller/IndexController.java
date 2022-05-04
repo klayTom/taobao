@@ -7,17 +7,13 @@ import com.jj.taobao.mapper.ProductMapper;
 import com.jj.taobao.mapper.UserMapper;
 import com.jj.taobao.model.Product;
 import com.jj.taobao.model.ProductExample;
-import com.jj.taobao.model.User;
 import com.jj.taobao.service.ProductService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -29,11 +25,11 @@ public class IndexController {
     @Autowired
     UserMapper userMapper;
 
-    @GetMapping({"/","index"})
+    @GetMapping({"/", "index"})
     public String toIndex(Model model,
-                          @RequestParam(value = "pageNum",defaultValue = "1")Integer pageNum,
-                          @RequestParam(value = "pageSize",defaultValue = "5")Integer pageSize,
-                          @RequestParam(value = "search",required = false)String search) {
+                          @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
+                          @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
+                          @RequestParam(value = "search", required = false) String search) {
 
         PageHelper.startPage(pageNum, pageSize);
         List<Product> productsBysearch = productService.selectSearch(search);
@@ -43,9 +39,9 @@ public class IndexController {
             PageInfo pageInfo = new PageInfo(productsBysearch, 5);
             //替换PageInfo实际结果集为处理后的数据productDtos
             pageInfo.setList(productDtos);
-            model.addAttribute("products",productDtos);
-            model.addAttribute("pageInfo",pageInfo);
-            model.addAttribute("search",search);
+            model.addAttribute("products", productDtos);
+            model.addAttribute("pageInfo", pageInfo);
+            model.addAttribute("search", search);
         } else {
             PageHelper.startPage(pageNum, pageSize);
             ProductExample example = new ProductExample();
@@ -57,8 +53,8 @@ public class IndexController {
             PageInfo pageInfo = new PageInfo(products, 5);
             //替换PageInfo实际结果集为处理后的数据productDtos
             pageInfo.setList(productDtos);
-            model.addAttribute("products",productDtos);
-            model.addAttribute("pageInfo",pageInfo);
+            model.addAttribute("products", productDtos);
+            model.addAttribute("pageInfo", pageInfo);
         }
 
 

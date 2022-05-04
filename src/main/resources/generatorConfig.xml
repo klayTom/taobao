@@ -10,7 +10,7 @@
         <plugin type="org.mybatis.generator.plugins.RowBoundsPlugin"></plugin>
 
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://localhost:3306/taobao"
+                        connectionURL="jdbc:mysql://localhost/taobao?useSSL=false"
                         userId="root"
                         password="root">
         </jdbcConnection>
@@ -31,9 +31,9 @@
         <javaClientGenerator type="XMLMAPPER" targetPackage="com.jj.taobao.mapper"  targetProject="src\main\java">
             <property name="enableSubPackages" value="true" />
         </javaClientGenerator>
-        <table tableName="product" domainObjectName="Product" ></table>
-        <table tableName="user" domainObjectName="User" ></table>
-        <table tableName="comment" domainObjectName="Comment" ></table>
-        <table tableName="notification" domainObjectName="Notification" ></table>
+        <table tableName="PRODUCT" domainObjectName="Product" ></table>
+        <table tableName="USER" domainObjectName="User" ></table>
+        <table tableName="COMMENT" domainObjectName="Comment" ></table>
+        <table tableName="NOTIFICATION" domainObjectName="Notification" ></table>
     </context>
 </generatorConfiguration>
